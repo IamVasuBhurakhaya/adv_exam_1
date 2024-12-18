@@ -28,7 +28,7 @@ class DataModel {
   int? active;
   int? activeDiff;
   double? fatalityRate;
-  RegionModel? region;
+  APIRegionModel? apiRegionModel;
 
   DataModel({
     this.date,
@@ -42,7 +42,7 @@ class DataModel {
     this.active,
     this.activeDiff,
     this.fatalityRate,
-    this.region,
+    this.apiRegionModel,
   });
 
   factory DataModel.mapToModel(Map m1) {
@@ -58,12 +58,12 @@ class DataModel {
       active: m1['active'],
       activeDiff: m1['activeDiff'],
       fatalityRate: m1['fatalityRate'],
-      region: m1['region'],
+      apiRegionModel: m1['region'],
     );
   }
 }
 
-class RegionModel {
+class APIRegionModel {
   String? iso;
   String? name;
   String? province;
@@ -71,7 +71,7 @@ class RegionModel {
   String? long;
   List<CityModel>? cityList = [];
 
-  RegionModel({
+  APIRegionModel({
     this.iso,
     this.name,
     this.province,
@@ -80,9 +80,9 @@ class RegionModel {
     this.cityList,
   });
 
-  factory RegionModel.mapToModel(Map m1) {
+  factory APIRegionModel.mapToModel(Map m1) {
     List regionList = m1['cities'];
-    return RegionModel(
+    return APIRegionModel(
       iso: m1['iso'],
       name: m1['name'],
       province: m1['province'],

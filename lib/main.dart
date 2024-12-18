@@ -1,9 +1,8 @@
-import 'package:covid_19/provider/provider.dart';
-import 'package:covid_19/uitls/routes..dart';
-import 'package:covid_19/views/detail/views/detail_page.dart';
-import 'package:covid_19/views/home/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'provider/provider.dart';
+import 'utils/routes.dart';
 
 void main() {
   runApp(
@@ -29,10 +28,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        routes: {
-          Routes.home: (context) => const HomePage(),
-          Routes.detail: (context) => const DetailPage(),
-        },
+        routes: AppRoutes.routes,
       ),
     );
   }

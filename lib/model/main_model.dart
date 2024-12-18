@@ -4,7 +4,7 @@ class RegionModel {
   RegionModel({this.data});
 
   factory RegionModel.mapToModel(Map map) {
-    List list = map['data'] ?? [];
+    List list = map['data'];
     return RegionModel(
       data: list.map((e) => RegionDataModel.mapToModel(e)).toList(),
     );
@@ -22,8 +22,8 @@ class RegionDataModel {
 
   factory RegionDataModel.mapToModel(Map map) {
     return RegionDataModel(
-      iso: map['iso'] ?? '',
-      name: map['name'] ?? '',
+      iso: map['iso'],
+      name: map['name'],
     );
   }
 }

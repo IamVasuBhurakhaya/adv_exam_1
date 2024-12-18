@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../provider/provider.dart';
-import '../../../uitls/routes..dart';
+import '../../../utils/routes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,9 +18,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      context.read<HomeProvider>().getRegion();
-    });
+    context.read<HomeProvider>().getRegion();
   }
 
   @override
@@ -28,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     homeProviderWatch = context.watch<HomeProvider>();
     homeProviderRead = context.read<HomeProvider>();
 
-    final regions = homeProviderWatch.dataModel. ?? [];
+    final regions = homeProviderWatch.regionModel?.data;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,31 +34,31 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: regions.isEmpty
+        child: regions!.isEmpty
             ? const Center(
-          child: CircularProgressIndicator(),
-        )
+                child: CircularProgressIndicator(),
+              )
             : ListView.builder(
-          itemCount: regions.length,
-          itemBuilder: (context, index) {
-            var region = regions[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  Routes.detail,
-                  arguments: region,
-                );
-              },
-              child: Card(
-                child: ListTile(
-                  title: Text(region.name),
-                  subtitle: Text("ISO: ${region.iso}"),
-                ),
+                itemCount: regions.length,
+                itemBuilder: (context, index) {
+                  var region = regions[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.detail,
+                        arguments: region,
+                      );
+                    },
+                    child: Card(
+                      child: ListTile(
+                        title: Text("${region.name}"),
+                        subtitle: Text("ISO: ${region.iso}"),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

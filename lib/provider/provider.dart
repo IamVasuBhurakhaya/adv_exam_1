@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import '../helper/helper.dart';
 import '../model/data_model.dart';
+import '../model/main_model.dart';
 
 class HomeProvider with ChangeNotifier {
-  RegionModel? apiModel;
-  DataModel? dataModel;
+  RegionModel? regionModel;
+  APIModel? apiModel;
 
   Future<void> getRegion() async {
-    apiModel = await APIHelper.helper.fetchRegion();
+    regionModel = await APIHelper.helper.fetchRegion();
     notifyListeners();
   }
 
   Future<void> getDataCovid() async {
-    dataModel = await APIHelper.helper.fetchData();
+    apiModel = await APIHelper.helper.fetchData();
     notifyListeners();
   }
 }

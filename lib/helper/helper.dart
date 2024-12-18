@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../model/data_model.dart';
+import '../model/main_model.dart';
 
 class APIHelper {
   static APIHelper helper = APIHelper._();
@@ -28,7 +29,7 @@ class APIHelper {
     }
   }
 
-  Future<DataModel?> fetchData() async {
+  Future<APIModel?> fetchData() async {
     String link =
         "https://covid-19-statistics.p.rapidapi.com/reports?city_name=Autauga&region_province=Alabama&iso=USA&region_name=US&q=US%20Alabama&date=2020-04-16";
 
@@ -40,7 +41,7 @@ class APIHelper {
 
       if (response.statusCode == 200) {
         var allData = jsonDecode(response.body);
-        return DataModel.mapToModel(allData);
+        return APIModel.mapToModel(allData);
       } else {
         print("Failed to load data: ${response.statusCode}");
         return null;
