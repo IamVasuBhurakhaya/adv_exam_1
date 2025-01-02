@@ -1,5 +1,5 @@
 class APIModel {
-  List<DataModel> data;
+  List<APIDataModel> data;
 
   APIModel({
     required this.data,
@@ -9,14 +9,14 @@ class APIModel {
     return APIModel(
       data: l1
           .map(
-            (e) => DataModel.mapToModel(e),
+            (e) => APIDataModel.mapToModel(e),
           )
           .toList(),
     );
   }
 }
 
-class DataModel {
+class APIDataModel {
   DateTime? date;
   int? confirmed;
   int? deaths;
@@ -30,7 +30,7 @@ class DataModel {
   double? fatalityRate;
   APIRegionModel? apiRegionModel;
 
-  DataModel({
+  APIDataModel({
     this.date,
     this.confirmed,
     this.deaths,
@@ -45,8 +45,8 @@ class DataModel {
     this.apiRegionModel,
   });
 
-  factory DataModel.mapToModel(Map m1) {
-    return DataModel(
+  factory APIDataModel.mapToModel(Map m1) {
+    return APIDataModel(
       date: m1['date'],
       confirmed: m1['confirmed'],
       deaths: m1['deaths'],
@@ -69,7 +69,7 @@ class APIRegionModel {
   String? province;
   String? lat;
   String? long;
-  List<CityModel>? cityList = [];
+  List<APICityModel>? cityList = [];
 
   APIRegionModel({
     this.iso,
@@ -90,14 +90,14 @@ class APIRegionModel {
       long: m1['long'],
       cityList: regionList
           .map(
-            (e) => CityModel.mapToModel(e),
+            (e) => APICityModel.mapToModel(e),
           )
           .toList(),
     );
   }
 }
 
-class CityModel {
+class APICityModel {
   String? name;
   DateTime? date;
   int? fips;
@@ -108,7 +108,7 @@ class CityModel {
   int? confirmedDiff;
   int? deathsDiff;
 
-  CityModel({
+  APICityModel({
     this.name,
     this.date,
     this.fips,
@@ -120,8 +120,8 @@ class CityModel {
     this.deathsDiff,
   });
 
-  factory CityModel.mapToModel(Map m1) {
-    return CityModel(
+  factory APICityModel.mapToModel(Map m1) {
+    return APICityModel(
       name: m1['name'],
       date: m1['date'],
       fips: m1['fips'],

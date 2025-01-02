@@ -2,109 +2,151 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../provider/provider.dart';
+import '../../bookmark/bookmark_provider/bookmark_provider.dart';
 
-class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+class DetailScreen extends StatefulWidget {
+  const DetailScreen({super.key});
 
   @override
-  State<DetailPage> createState() => DetailPageState();
+  State<DetailScreen> createState() => _DetailScreenState();
 }
 
-class DetailPageState extends State<DetailPage> {
-  late HomeProvider detailProviderW;
-  late HomeProvider detailProviderR;
+class _DetailScreenState extends State<DetailScreen> {
+  late HomeProvider pW;
+  late HomeProvider pR;
+  late BookMarkProvider providerW;
+  late BookMarkProvider providerR;
 
   @override
   void initState() {
+    context.read<HomeProvider>().getCovid();
+    context.read<HomeProvider>().getDataCovid();
     super.initState();
-    context.read<HomeProvider>().getDataCovid(); // Fetching the data
   }
 
   @override
   Widget build(BuildContext context) {
-    detailProviderR = context.read<HomeProvider>();
-    detailProviderW = context.watch<HomeProvider>();
-    int modelIndex = ModalRoute.of(context)?.settings.arguments as int;
-
-    final dataModel = detailProviderW.apiModel?.data[modelIndex];
+    pR = context.read<HomeProvider>();
+    pW = context.watch<HomeProvider>();
+    providerR = context.read<BookMarkProvider>();
+    providerW = context.watch<BookMarkProvider>();
+    int index = ModalRoute.of(context)?.settings.arguments as int;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Details for ${dataModel?.apiRegionModel?.name ?? ''}"),
+        title: Text(
+          pW.mainModel?.data?[index].name ?? 'Details',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              String bookmarkName =
+                  pW.mainModel?.data?[index].name ?? 'Unknown';
+              providerW.addFavourite(name: bookmarkName);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text(
+                    "$bookmarkName added to bookmarks!",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.bookmark,
+              color: Colors.black54,
+            ),
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (dataModel != null) ...[
-                Text(
-                  "Date: ${dataModel.date}",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${pW.mainModel?.data?[index].name}",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Date: ${pW.apiModel?.data[index].date ?? 'N/A'}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const Divider(thickness: 1, height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        buildStatistic(
+                            "Active", "${pW.apiModel?.data[index].active}"),
+                        buildStatistic("Recovered",
+                            "${pW.apiModel?.data[index].recovered}"),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        buildStatistic(
+                            "Deaths", "${pW.apiModel?.data[index].deaths}"),
+                        buildStatistic("Confirmed",
+                            "${pW.apiModel?.data[index].confirmed}"),
+                      ],
+                    ),
+                  ],
                 ),
-                Text("Confirmed Cases: ${dataModel.confirmed}"),
-                Text("Deaths: ${dataModel.deaths}"),
-                Text("Recovered: ${dataModel.recovered}"),
-                Text("Active Cases: ${dataModel.active}"),
-                Text(
-                    "Fatality Rate: ${dataModel.fatalityRate?.toStringAsFixed(2)}%"),
-                const SizedBox(height: 16),
-                const Text(
-                  "Region Information:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                if (dataModel.apiRegionModel != null) ...[
-                  Text("Region Name: ${dataModel.apiRegionModel?.name}"),
-                  Text("ISO Code: ${dataModel.apiRegionModel?.iso}"),
-                  Text("Province: ${dataModel.apiRegionModel?.province}"),
-                  Text("Latitude: ${dataModel.apiRegionModel?.lat}"),
-                  Text("Longitude: ${dataModel.apiRegionModel?.long}"),
-                ] else
-                  const Text("No region data available."),
-                const SizedBox(height: 16),
-                const Text(
-                  "City Details:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                if (dataModel.apiRegionModel?.cityList != null &&
-                    dataModel.apiRegionModel!.cityList!.isNotEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: dataModel.apiRegionModel!.cityList!.map((city) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("City Name: ${city.name}"),
-                                Text("Date: ${city.date}"),
-                                Text("FIPS: ${city.fips}"),
-                                Text("Latitude: ${city.lat}"),
-                                Text("Longitude: ${city.long}"),
-                                Text("Confirmed: ${city.confirmed}"),
-                                Text("Deaths: ${city.deaths}"),
-                                Text("Confirmed Diff: ${city.confirmedDiff}"),
-                                Text("Deaths Diff: ${city.deathsDiff}"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  )
-                else
-                  const Text("No city details available."),
-              ] else
-                const Text("No data available."),
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget buildStatistic(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.black54,
+          ),
+        ),
+      ],
     );
   }
 }

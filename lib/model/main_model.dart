@@ -1,29 +1,29 @@
-class RegionModel {
-  List<RegionDataModel>? data;
+class MainModel {
+  List<MainDataModel>? data = [];
 
-  RegionModel({this.data});
+  MainModel({this.data});
 
-  factory RegionModel.mapToModel(Map map) {
-    List list = map['data'];
-    return RegionModel(
-      data: list.map((e) => RegionDataModel.mapToModel(e)).toList(),
+  factory MainModel.mapToModel(Map m1) {
+    List list = m1['data'] ?? [];
+    return MainModel(
+      data: list.map((e) => MainDataModel.mapToModel(e)).toList(),
     );
   }
 }
 
-class RegionDataModel {
+class MainDataModel {
   String? iso;
   String? name;
 
-  RegionDataModel({
+  MainDataModel({
     this.iso,
     this.name,
   });
 
-  factory RegionDataModel.mapToModel(Map map) {
-    return RegionDataModel(
-      iso: map['iso'],
-      name: map['name'],
+  factory MainDataModel.mapToModel(Map m1) {
+    return MainDataModel(
+      iso: m1['iso'] ?? '',
+      name: m1['name'] ?? '',
     );
   }
 }
